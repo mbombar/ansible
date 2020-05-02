@@ -1,0 +1,50 @@
+---
+# - name: Create config directory
+#   file:
+#     path: /home/{{ ansible_user }}/Git/Config_Files
+#     state: directory
+#     mode: "2775"
+#     owner: "{{ ansible_user }}"
+
+- name: Deploy ssh key
+  authorized_key:
+    user: "{{ ansible_user }}"
+    comment: Maxime Bombar (bombar@crans.org) - Poincare
+    exclusive: no
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZ5sU8rUfwe72C6k/xS0ffsKs0rr4KITeVfk4ZeFmP3
+
+- name: Clone Config_Files
+  git:
+    repo: ssh://git@gitlab.crans.org/bombar/Config_Files.git
+    dest: /home/{{ ansible_user }}/Git/Config_Files
+    track_submodules: yes
+    version: master
+  when: not ansible_check_mode
+
+- name: Find ssh configuration
+  find:
+    paths: /home/{{ ansible_user }}/Git/Config_Files/.ssh
+    patterns: config*
+  register: ssh_config
+  when: not ansible_check_mode
+  
+- name: Deploy ssh configuration
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/.ssh/{{ item.path | basename }}
+    dest: /home/{{ ansible_user }}/.ssh/{{ item.path | basename }}
+    state: link
+  loop: "{{ ssh_config.files }}"
+  when: not ansible_check_mode
+
+- name: Deploy general configuration
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
+    dest: /home/{{ ansible_user }}/{{ item }}
+    state: link
+  loop:
+    - .emacs
+    - .git
+    - .gitconfig
+    - .zshrc
+    - .zsh
+  when: not ansible_check_mode

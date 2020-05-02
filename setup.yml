@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: all
+  roles:
+    - common_tools
+
+- hosts: all
+  vars:
+    - ansible_become: false
+  roles:
+    - deploy_config

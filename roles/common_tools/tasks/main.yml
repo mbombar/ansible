@@ -1,0 +1,23 @@
+- name: Install common tools
+  apt:
+    update_cache: true
+    install_recommends: false
+    name:
+      - sudo
+      - molly-guard
+      - ntp
+      - apt
+      - emacs-nox
+      - htop
+      - zsh
+      - aptitude
+      - iotop  # monitor i/o
+      - tree  # create a graphical tree of files
+      - git
+      - less
+      - needrestart
+      - lsb-release
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
