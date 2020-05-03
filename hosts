@@ -5,7 +5,7 @@ thunes-dev
 [crans]
 zamok
 
-[hilbert]
+[scaleway]
 hilbert
 
 [bde]
@@ -24,7 +24,7 @@ crans
 
 [pollion:children]
 bde
-hilbert
+scaleway
 
 [bombar:vars]
 ansible_user=bombar
