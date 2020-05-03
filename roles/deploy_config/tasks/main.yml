@@ -43,7 +43,6 @@
     state: link
   loop:
     - .emacs
-    - .git
     - .gitconfig
     - .zshrc
     - .zsh
