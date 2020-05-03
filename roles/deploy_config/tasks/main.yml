@@ -15,7 +15,7 @@
 
 - name: Clone Config_Files
   git:
-    repo: ssh://git@gitlab.crans.org/bombar/Config_Files.git
+    repo: https://gitlab.crans.org/bombar/Config_Files.git
     dest: /home/{{ ansible_user }}/Git/Config_Files
     track_submodules: yes
     version: master
