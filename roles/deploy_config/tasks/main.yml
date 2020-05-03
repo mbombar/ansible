@@ -1,11 +1,4 @@
 ---
-# - name: Create config directory
-#   file:
-#     path: /home/{{ ansible_user }}/Git/Config_Files
-#     state: directory
-#     mode: "2775"
-#     owner: "{{ ansible_user }}"
-
 - name: Deploy ssh key
   authorized_key:
     user: "{{ ansible_user }}"
@@ -19,6 +12,7 @@
     dest: /home/{{ ansible_user }}/Git/Config_Files
     track_submodules: yes
     version: master
+    umask: "022"
   when: not ansible_check_mode
 
 - name: Find ssh configuration
