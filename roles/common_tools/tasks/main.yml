@@ -1,3 +1,4 @@
+---
 - name: Install common tools
   apt:
     update_cache: true
@@ -7,6 +8,7 @@
       - molly-guard
       - ntp
       - apt
+      - apt-files
       - emacs-nox
       - htop
       - zsh
