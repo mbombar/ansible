@@ -38,6 +38,25 @@
   loop:
     - .emacs
     - .gitconfig
+  when: not ansible_check_mode
+
+- name: Deploy zsh config
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
+    dest: /home/{{ ansible_user }}/{{ item }}
+    state: link
+  loop:
     - .zshrc
     - .zsh
-  when: not ansible_check_mode
+  when: shell == "zsh" and not ansible_check_mode
+
+- name: Deploy bash config
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
+    dest: /home/{{ ansible_user }}/{{ item }}
+    state: link
+  loop:
+    - .umaskrc
+    - .bashrc
+    - .bash_aliases
+  when: shell == "bash" and not ansible_check_mode
