@@ -8,7 +8,7 @@
       - molly-guard
       - ntp
       - apt
-      - apt-files
+      - apt-file
       - emacs-nox
       - htop
       - zsh
