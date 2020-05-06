@@ -21,7 +21,7 @@
     patterns: config*
   register: ssh_config
   when: not ansible_check_mode
-  
+
 - name: Deploy ssh configuration
   file:
     src: /home/{{ ansible_user}}/Git/Config_Files/.ssh/{{ item.path | basename }}
@@ -30,14 +30,18 @@
   loop: "{{ ssh_config.files }}"
   when: not ansible_check_mode
 
-- name: Deploy general configuration
+- name: Deploy .gitconfig
   file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
-    dest: /home/{{ ansible_user }}/{{ item }}
+    src: /home/{{ ansible_user}}/Git/Config_Files/.gitconfig
+    dest: /home/{{ ansible_user }}/.gitconfig
     state: link
-  loop:
-    - .emacs
-    - .gitconfig
+  when: not ansible_check_mode
+
+- name: Deploy .emacs
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/.emacs_simple
+    dest: /home/{{ ansible_user }}/.emacs
+    state: link
   when: not ansible_check_mode
 
 - name: Deploy zsh config
