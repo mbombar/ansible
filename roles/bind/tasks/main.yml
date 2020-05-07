@@ -1,0 +1,34 @@
+---
+- name: Install bind9
+  apt:
+    update_cache: true
+    name:
+      - bind9
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Deploy config
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: root
+    group: bind
+  with_items:
+    - { src: 'named.conf.local.j2', dest: '/etc/bind/named.conf.local' }
+
+- name: deploy zones
+  template:
+    src: "db.{{ item.name }}.j2"
+    dest: "/var/cache/bind/db.{{ item.name }}"
+    owner: root
+    group: bind
+  when:
+    - (item.type == "master")
+  loop: "{{ dns_zones }}"
+
+- name: Restart bind
+  systemd:
+    enabled: yes
+    state: restarted
+    name: bind9

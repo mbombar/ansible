@@ -1,0 +1,35 @@
+; {{ ansible_managed }}
+
+$ORIGIN {{item.name }}.
+$TTL 10
+
+@		    IN  SOA     ns bombar.crans.org.   (
+	    	    	2020050701 ; serial
+			86400      ; refresh
+			3600  	   ; retry
+			3600000    ; expire
+			300	   ; TTL
+			)
+
+@		    IN  NS      ns
+@		    IN  NS      ns0.paulon.org.
+ns		    IN  A       51.15.204.106
+ns		    IN  AAAA    2001:bc8:4400:2c00::3:923
+
+@		    IN A      	51.15.204.106
+@		    IN AAAA   	2001:bc8:4400:2c00::3:923
+hilbert     	    IN A      	51.15.204.106
+hilbert 	    IN AAAA   	2001:bc8:4400:2c00::3:923
+
+
+enseignement	    IN CNAME  maximebombar.fr.
+gabidulin	    IN CNAME  gabidulin.servens.org.
+
+
+; IP over DNS
+hack		300 IN NS	avion
+t		10  IN NS	ns.t
+ns.hack		    IN A	185.230.78.66
+ns.t		    IN A	51.15.204.106
+avion		    IN A	185.230.78.66
+dns		    IN A	51.15.204.106

@@ -1,0 +1,34 @@
+// {{ ansible_managed }}
+
+include "/etc/bind/zones.rfc1918";
+
+{% for z in dns_zones %}
+zone "{{z.name}}" IN {
+  {% if z.type == "master" -%}
+  type master;
+  file "db.{{z.name}}";
+  forwarders {
+    {% for f in z.forwarders -%}
+    {{f}};
+    {% endfor -%}
+  };
+  allow-transfer {
+    {% for f in z.transfer -%}
+    {{f}};
+    {% endfor -%}
+  };
+  notify yes;
+  {% endif -%}
+  {% if z.type == "slave" -%}
+  type slave;
+  file "bak.{{z.name}}";
+  masters {
+    {% for f in z.masters -%}
+    {{f}};
+    {% endfor -%}
+  };
+  allow-transfer { "none"; };
+  notify no;
+  {% endif -%}
+};
+{% endfor -%}
