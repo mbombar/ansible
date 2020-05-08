@@ -1,5 +1,14 @@
 shell: "bash"
 
 dns_zones:
-  - { name: "maximebombar.fr", type: "master", forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"], transfer: ["51.158.74.193", "2001:bc8:47c0:620::1"]}
-  - { name: "satellist.fr", type: "master", forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1", "213.251.188.139", "2001:41d0:1:198b::1"], transfer: ["51.158.74.193", "2001:bc8:47c0:620::1", "213.251.188.139", "2001:41d0:1:198b::1"]}
+  - { name: "maximebombar.fr",
+      type: "master",
+      forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
+      transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
+    }
+
+  - { name: "satellist.fr",
+      type: "master",
+      forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
+      transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
+    }

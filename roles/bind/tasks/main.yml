@@ -8,6 +8,13 @@
   retries: 3
   until: apt_result is succeeded
 
+- name: Create serial
+  command: date -u +%Y%m%d%H
+  register: timestamp
+  changed_when: false
+  run_once: true
+  check_mode: false
+
 - name: Deploy config
   template:
     src: '{{ item.src }}'
@@ -23,6 +30,21 @@
     dest: "/var/cache/bind/db.{{ item.name }}"
     owner: root
     group: bind
+  when:
+    - (item.type == "master")
+  loop: "{{ dns_zones }}"
+
+- name: Ensures Zone directory exists
+  file:
+    path: /etc/bind/zones/
+    state: directory
+    mode: 0755
+
+- name: Symlink zone files
+  file:
+    src: /var/cache/bind/db.{{ item.name }}
+    dest: /etc/bind/zones/db.{{ item.name }}
+    state: link
   when:
     - (item.type == "master")
   loop: "{{ dns_zones }}"

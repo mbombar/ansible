@@ -6,12 +6,15 @@ include "/etc/bind/zones.rfc1918";
 zone "{{z.name}}" IN {
   {% if z.type == "master" -%}
   type master;
+  // Zone Files are in /var/cache/bind/
   file "db.{{z.name}}";
+
   forwarders {
     {% for f in z.forwarders -%}
     {{f}};
     {% endfor -%}
   };
+
   allow-transfer {
     {% for f in z.transfer -%}
     {{f}};
@@ -19,16 +22,20 @@ zone "{{z.name}}" IN {
   };
   notify yes;
   {% endif -%}
+
   {% if z.type == "slave" -%}
   type slave;
   file "bak.{{z.name}}";
+
   masters {
     {% for f in z.masters -%}
     {{f}};
     {% endfor -%}
   };
+
   allow-transfer { "none"; };
   notify no;
   {% endif -%}
 };
-{% endfor -%}
+
+{% endfor %}

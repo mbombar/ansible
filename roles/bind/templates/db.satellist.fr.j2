@@ -1,42 +1,35 @@
-; {{ ansible_managed }}
+{% extends "base.j2" %}
 
-$ORIGIN {{item.name }}.
-$TTL 10
+{% block MX %}
+@				IN MX	100	mx3.mail.ovh.net.
+@				IN MX	5	mx2.mail.ovh.net.
+@				IN MX	1	mx1.mail.ovh.net.
+crans				IN MX	1	redirect.ovh.net.
+henstai				IN MX	1	redirect.ovh.net.
+{% endblock %}
 
-@			      IN  SOA     ns bombar.crans.org.   (
-			       	  2020050701 ; serial
-				  86400      ; refresh
-				  3600	     ; retry
-				  3600000    ; expire
-				  300	     ; TTL
-				  )
+{% block TXT %}
+@			600	IN TXT	"v=spf1 include:mx.ovh.com ~all"
+president.at.crans	600	IN TXT	"paulon@crans.org"
+president.e.at.henstai	600	IN TXT	"genital@prolaps.us"
+www			60	IN TXT	"2|http://satellisgp.cluster021.hosting.ovh.net/"
+{% endblock %}
 
-			      IN NS	ns
-                              IN NS	ns19.ovh.net.
-                              IN NS	dns19.ovh.net.
-ns			      IN  A	51.15.204.106
-ns			      IN  AAAA	2001:bc8:4400:2c00::3:923
+{% block SRV %}
+_imaps._tcp			IN SRV	0 0 993 ssl0.ovh.net.
+_autodiscover._tcp		IN SRV	0 0 443 mailconfig.ovh.net.
+_submission._tcp		IN SRV	0 0 465 ssl0.ovh.net.
+{% endblock %}
 
-                              IN MX     100 mx3.mail.ovh.net.
-                              IN MX     5 mx2.mail.ovh.net.
-                              IN MX     1 mx1.mail.ovh.net.
-                              IN A      213.186.33.5
-                          600 IN TXT    "v=spf1 include:mx.ovh.com ~all"
-_autodiscover._tcp            IN SRV    0 0 443 mailconfig.ovh.net.
-_imaps._tcp                   IN SRV    0 0 993 ssl0.ovh.net.
-_submission._tcp              IN SRV    0 0 465 ssl0.ovh.net.
-autoconfig                    IN CNAME  mailconfig.ovh.net.
-autodiscover                  IN CNAME  mailconfig.ovh.net.
-crans                         IN MX     1 redirect.ovh.net.
-henstai                       IN MX     1 redirect.ovh.net.
-hilbert                       IN A      51.15.204.106
-hilbert                       IN AAAA   2001:bc8:4400:2c00::3:923
-imap                          IN CNAME  ssl0.ovh.net.
-liste-ca                      IN CNAME  hilbert.satellist.fr.
-mail                          IN CNAME  ssl0.ovh.net.
-pop3                          IN CNAME  ssl0.ovh.net.
-president.at.crans        600 IN TXT    "paulon@crans.org"
-president.e.at.henstai    600 IN TXT    "genital@prolaps.us"
-smtp                          IN CNAME  ssl0.ovh.net.
-www                           IN A      213.186.33.5
-www                        60 IN TXT    "2|http://satellisgp.cluster021.hosting.ovh.net/"
+
+{% block zone %}
+autodiscover			IN CNAME  mailconfig.ovh.net.
+autoconfig			IN CNAME  mailconfig.ovh.net.
+imap				IN CNAME  ssl0.ovh.net.
+liste-ca			IN CNAME  hilbert.satellist.fr.
+mail				IN CNAME  ssl0.ovh.net.
+pop3				IN CNAME  ssl0.ovh.net.
+smtp				IN CNAME  ssl0.ovh.net.
+
+www				IN A	  213.186.33.5
+{% endblock %}

@@ -1,0 +1,37 @@
+; {{ ansible_managed }}
+
+$ORIGIN {{item.name }}.
+$TTL 10
+
+@				IN  SOA	    ns bombar.crans.org.   (
+					       {{ timestamp.stdout }}  ; serial
+					       86402	   ; refresh
+					       3600	   ; retry
+					       3600000	   ; expire
+					       300	   ; TTL
+					       )
+
+{% block NS %}
+@				IN  NS	    ns
+@				IN  NS	    ns0.paulon.org.
+ns				IN  A	    51.15.204.106
+ns				IN  AAAA    2001:bc8:4400:2c00::3:923
+{% endblock %}
+
+{% block MX %}
+{% endblock %}
+
+@				IN A		51.15.204.106
+@				IN AAAA		2001:bc8:4400:2c00::3:923
+
+hilbert				IN A		51.15.204.106
+hilbert				IN AAAA		2001:bc8:4400:2c00::3:923
+
+{% block TXT %}
+{% endblock %}
+
+{% block SRV %}
+{% endblock %}
+
+{% block zone %}
+{% endblock %}
