@@ -1,0 +1,25 @@
+# {{ ansible_managed }}
+
+# To generate the certificate, please use the following command
+# certbot --config /etc/letsencrypt/conf.d/{{ certbot.certname }}.ini certonly
+
+# Use a 4096 bit RSA key instead of 2048
+rsa-key-size = 4096
+
+# Always use the staging/testing server
+# server = https://acme-staging.api.letsencrypt.org/directory
+
+# Uncomment and update to register with the specified e-mail address
+email = {{ certbot.mail }}
+
+# Uncomment to use a text interface instead of ncurses
+text = True
+
+# Use DNS-01 challenge
+authenticator = dns-rfc2136
+dns-rfc2136-credentials = /etc/letsencrypt/secrets/{{ certbot.certname }}/rfc2136.ini
+dns-rfc2136-propagation-seconds = 30
+
+# Wildcard the domain
+cert-name = {{ certbot.certname }}
+domains = {{ certbot.domains }}

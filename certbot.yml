@@ -1,0 +1,25 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: hilbert
+  vars:
+    certbot:
+      dns_rfc2136_server: 127.0.0.1
+      dns_rfc2136_name: certbot_challenge_maximebombar
+      dns_rfc2136_secret: "{{ certbot_challenge_maximebombar }}"
+      mail: root@maximebombar.fr
+      certname: maximebombar.fr
+      domains: "*.maximebombar.fr"
+  roles:
+    - certbot
+
+- hosts: hilbert
+  vars:
+    certbot:
+      dns_rfc2136_server: 127.0.0.1
+      dns_rfc2136_name: certbot_challenge_satellist
+      dns_rfc2136_secret: "{{ certbot_challenge_satellist }}"
+      mail: root@satellist.fr
+      certname: satellist.fr
+      domains: "*.satellist.fr"
+  roles:
+    - certbot
