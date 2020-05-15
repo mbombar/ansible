@@ -2,7 +2,17 @@
 
 include "/etc/bind/zones.rfc1918";
 
+
 {% for z in dns_zones %}
+{% set zname = z.name.split('.')[0] %}
+{% if z.type == "master" and z._acme %}
+// Let's Encrypt Challenge DNS-01 keys (TSIG)
+key "certbot_challenge_{{zname}}" {
+    algorithm hmac-sha512;
+    secret "{{ lookup('vars', 'certbot_challenge_' + zname) }}";
+};
+{% endif %}
+
 zone "{{z.name}}" IN {
   {% if z.type == "master" -%}
   type master;
@@ -20,7 +30,14 @@ zone "{{z.name}}" IN {
     {{f}};
     {% endfor -%}
   };
+
   notify yes;
+
+  {% if z._acme %}
+  update-policy {
+     grant certbot_challenge_{{zname}} name _acme-challenge.{{z.name}}. TXT;
+  };
+  {% endif -%}
   {% endif -%}
 
   {% if z.type == "slave" -%}

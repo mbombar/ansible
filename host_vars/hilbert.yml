@@ -5,10 +5,12 @@ dns_zones:
       type: "master",
       forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
       transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
+      _acme: true,
     }
 
   - { name: "satellist.fr",
       type: "master",
       forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
       transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
+      _acme: true,
     }
