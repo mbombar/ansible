@@ -1,5 +1,3 @@
-shell: "zsh"
-
 thunes_debug: True
 thunes_db_name: "thunes_dev"
 thunes_db_user: "thunes_dev"
