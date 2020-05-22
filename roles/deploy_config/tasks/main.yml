@@ -3,7 +3,7 @@
   authorized_key:
     user: "{{ ansible_user }}"
     comment: Maxime Bombar (bombar@crans.org) - Poincare
-    exclusive: no
+    exclusive: yes
     key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZ5sU8rUfwe72C6k/xS0ffsKs0rr4KITeVfk4ZeFmP3
 
 - name: Clone Config_Files
@@ -42,7 +42,14 @@
     src: /home/{{ ansible_user}}/Git/Config_Files/.emacs_simple
     dest: /home/{{ ansible_user }}/.emacs
     state: link
-  when: not ansible_check_mode
+  when: not ansible_check_mode and not ansible_connection == "local"
+
+- name: Deploy .emacs local
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/.emacs
+    dest: /home/{{ ansible_user }}/.emacs
+    state: link
+  when: not ansible_check_mode and ansible_connection == "local"
 
 - name: Deploy zsh config
   file:
