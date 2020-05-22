@@ -9,3 +9,7 @@
     - ansible_become: false
   roles:
     - deploy_config
+
+- hosts: localhost
+  roles:
+    - i3

@@ -1,0 +1,29 @@
+---
+- name: Install useful packages
+  apt:
+    update_cache: true
+    install_recommends: false
+    name:
+      - i3
+      - firefox
+      - chromium
+      - vlc
+      - thunderbird
+      - scrot
+      - xss-lock
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Deploy i3 configuration
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
+    dest: /home/{{ ansible_user }}/{{ item }}
+    state: link
+  loop:
+    - .config/autorandr
+    - .config/i3
+    - .config/i3status
+    - .config/i3blocks
+    - .Xmodmap
+  when: not ansible_check_mode
