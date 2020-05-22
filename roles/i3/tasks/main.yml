@@ -26,4 +26,5 @@
     - .config/i3status
     - .config/i3blocks
     - .Xmodmap
+    - .zprofile
   when: not ansible_check_mode
