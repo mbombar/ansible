@@ -1,30 +1,62 @@
 ---
-- name: Install useful packages
+- name: Install i3 linked packages
   apt:
     update_cache: true
     install_recommends: false
     name:
       - i3
-      - firefox
-      - chromium
-      - vlc
-      - thunderbird
+      - xfce4-terminal
       - scrot
       - xss-lock
+      - arandr
+      - autorandr
+      - imagemagick
+      - brightnessctl
+      - pulseaudio
+      - pulseaudio-utils
+      - pavucontrol
   register: apt_result
   retries: 3
   until: apt_result is succeeded
 
-- name: Deploy i3 configuration
+- name: Ensure .config directory exists
+  file:
+    path: /home/{{ ansible_user }}/.config
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_env.SUDO_GID }}"
+    recurse: yes
+
+- name: Find .config files
+  find:
+    paths: /home/{{ ansible_user }}/Git/Config_Files/.config
+    file_type: any
+    hidden: yes
+  register: dot_config
+  when: not ansible_check_mode
+
+- name: Deploy .config files
+  file:
+    src: /home/{{ ansible_user}}/Git/Config_Files/.config/{{ item.path | basename }}
+    dest: /home/{{ ansible_user }}/.config/{{ item.path | basename }}
+    state: link
+  loop: "{{ dot_config.files }}"
+  when: not ansible_check_mode
+
+- name: Deploy other dotfiles
   file:
     src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
     dest: /home/{{ ansible_user }}/{{ item }}
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_env.SUDO_GID }}"
+    force: yes
     state: link
   loop:
-    - .config/autorandr
-    - .config/i3
-    - .config/i3status
-    - .config/i3blocks
     - .Xmodmap
     - .zprofile
   when: not ansible_check_mode
+
+- name: Enable touchpad tapping
+  template:
+    src: X11/xorg.conf.d/40-libinput.conf.j2
+    dest: /etc/X11/xorg.conf.d/40-libinput.conf
