@@ -4,7 +4,7 @@
     user: "{{ ansible_user }}"
     comment: Maxime Bombar (bombar@crans.org) - Poincare
     exclusive: yes
-    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZ5sU8rUfwe72C6k/xS0ffsKs0rr4KITeVfk4ZeFmP3
+    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvuevXcRtS/qfxSZg6/EGiNEHeMA55G92itIkhMRMZ
 
 - name: Clone Config_Files
   git:
