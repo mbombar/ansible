@@ -42,14 +42,7 @@
     src: /home/{{ ansible_user}}/Git/Config_Files/.emacs_simple
     dest: /home/{{ ansible_user }}/.emacs
     state: link
-  when: not ansible_check_mode and not ansible_connection == "local"
-
-- name: Deploy .emacs local
-  file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/.emacs
-    dest: /home/{{ ansible_user }}/.emacs
-    state: link
-  when: not ansible_check_mode and ansible_connection == "local"
+  when: not ansible_check_mode
 
 - name: Deploy zsh config
   file:
