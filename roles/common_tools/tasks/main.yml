@@ -10,6 +10,7 @@
       - apt
       - apt-file
       - emacs-nox
+      - yaml-mode
       - htop
       - zsh
       - aptitude
