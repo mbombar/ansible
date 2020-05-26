@@ -1,3 +1,6 @@
+# Default variables
 shell: "zsh"
+can_sudo: no  # Avoid abusing of my rights ...
+
 certbot_challenge_maximebombar: "{{ vault_certbot_challenge_maximebombar }}"
 certbot_challenge_satellist: "{{ vault_certbot_challenge_satellist }}"
