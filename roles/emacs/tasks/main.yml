@@ -15,6 +15,7 @@
       - editorconfig  # You will never win tab vs space war
       - cython3
       - black  # Python formatter
+      - python3-pyflakes
   register: apt_result
   retries: 3
   until: apt_result is succeeded
