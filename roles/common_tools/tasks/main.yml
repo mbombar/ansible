@@ -20,6 +20,9 @@
       - less
       - needrestart
       - lsb-release
+      - dnsutils
+      - ldnsutils
+      - cloc
   register: apt_result
   retries: 3
   until: apt_result is succeeded
