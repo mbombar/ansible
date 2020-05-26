@@ -9,7 +9,7 @@
 - name: Clone Config_Files
   git:
     repo: https://gitlab.crans.org/bombar/Config_Files.git
-    dest: /home/{{ ansible_user }}/Git/Config_Files
+    dest: ~/Git/Config_Files
     track_submodules: yes
     version: master
     umask: "022"
@@ -17,37 +17,30 @@
 
 - name: Find ssh configuration
   find:
-    paths: /home/{{ ansible_user }}/Git/Config_Files/.ssh
+    paths: ~/Git/Config_Files/.ssh
     patterns: config*
   register: ssh_config
   when: not ansible_check_mode
 
 - name: Deploy ssh configuration
   file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/.ssh/{{ item.path | basename }}
-    dest: /home/{{ ansible_user }}/.ssh/{{ item.path | basename }}
+    src: ~/Git/Config_Files/.ssh/{{ item.path | basename }}
+    dest: ~/.ssh/{{ item.path | basename }}
     state: link
   loop: "{{ ssh_config.files }}"
   when: not ansible_check_mode
 
 - name: Deploy .gitconfig
   file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/.gitconfig
-    dest: /home/{{ ansible_user }}/.gitconfig
-    state: link
-  when: not ansible_check_mode
-
-- name: Deploy .emacs
-  file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/.emacs_simple
-    dest: /home/{{ ansible_user }}/.emacs
+    src: ~/Git/Config_Files/.gitconfig
+    dest: ~/.gitconfig
     state: link
   when: not ansible_check_mode
 
 - name: Deploy zsh config
   file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
-    dest: /home/{{ ansible_user }}/{{ item }}
+    src: ~/Git/Config_Files/{{ item }}
+    dest: ~/{{ item }}
     state: link
   loop:
     - .zshrc
@@ -56,8 +49,8 @@
 
 - name: Deploy bash config
   file:
-    src: /home/{{ ansible_user}}/Git/Config_Files/{{ item }}
-    dest: /home/{{ ansible_user }}/{{ item }}
+    src: ~/Git/Config_Files/{{ item }}
+    dest: ~/{{ item }}
     state: link
   loop:
     - .umaskrc

@@ -1,4 +1,5 @@
 shell: "bash"
+can_sudo: yes
 
 dns_zones:
   - { name: "maximebombar.fr",

@@ -5,11 +5,11 @@
     - common_tools
 
 - hosts: all
-  vars:
-    - ansible_become: false
   roles:
     - deploy_config
+  become: no
 
 - hosts: localhost
   roles:
     - i3
+  become: no

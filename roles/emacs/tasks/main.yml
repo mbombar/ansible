@@ -55,7 +55,7 @@
 
 - name: Reset potentially old emacs configuration
   file:
-    path: "/home/{{ ansible_env.SUDO_USER }}/{{ item }}"
+    path: "~/{{ item }}"
     state: absent
   loop:
     - .emacs.d
@@ -69,11 +69,11 @@
    depth: "{{ item.depth }}"
   loop:
     - { repo: "https://github.com/hlissner/doom-emacs.git",
-        dest: "/home/{{ansible_env.SUDO_USER}}/Git/doom_emacs",
+        dest: "~/Git/doom_emacs",
         depth: 1,
       }
     - { repo: "https://gitlab.crans.org/bombar/doom.git",
-        dest: "/home/{{ansible_env.SUDO_USER}}/Git/doom_configuration",
+        dest: "~/Git/doom_configuration",
         depth: 0,
       }
   when: not ansible_check_mode
@@ -91,8 +91,8 @@
 
 - name: Deploy doom configuration
   file:
-    src: "/home/{{ ansible_env.SUDO_USER }}/Git/{{ item.src }}"
-    dest: "/home/{{ ansible_env.SUDO_USER }}/{{ item.dest }}"
+    src: "~/Git/{{ item.src }}"
+    dest: "~/{{ item.dest }}"
     state: link
   loop:
     - { src: doom_emacs, dest: .emacs.d }
@@ -101,4 +101,4 @@
 
 - name: Synchronize doom
   command:
-    cmd: "/home/{{ ansible_env.SUDO_USER }}/.emacs.d/bin/doom sync"
+    cmd: "~/.emacs.d/bin/doom sync"
