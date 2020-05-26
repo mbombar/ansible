@@ -1,0 +1,103 @@
+---
+- name: Install emacs packages
+  apt:
+    update_cache: true
+    install_recommends: false
+    name:
+      - emacs-nox
+      - ripgrep
+      - fdclone
+      - isort  # python
+      - pipenv  # python
+      - python3-nose  # python
+      - python3-pytest  # python
+      - shellcheck  # shell
+      - editorconfig  # You will never win tab vs space war
+      - cython3
+      - black  # Python formatter
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+  become: yes
+  when: can_sudo
+
+- name: Python3 is good. Eat it.
+  command:
+    cmd: update-alternatives --install {{ item.link }} {{ item.name }} {{ item.path }} {{ item.priority }}
+  become: yes
+  when: can_sudo
+  loop:
+    - {
+    link: /usr/bin/python,
+    name: python,
+    path: /usr/bin/python3,
+    priority: 40,
+    }
+    - {
+    link: /usr/bin/nosetests,
+    name: nosetests,
+    path: /usr/bin/nosetests3,
+    priority: 40,
+    }
+    - {
+    link: /usr/bin/pytest,
+    name: pytest,
+    path: /usr/bin/pytest-3,
+    priority: 40,
+    }
+    - {
+    link: /usr/bin/cython,
+    name: cython,
+    path: /usr/bin/cython3,
+    priority: 40,
+    }
+
+- name: Reset potentially old emacs configuration
+  file:
+    path: "/home/{{ ansible_env.SUDO_USER }}/{{ item }}"
+    state: absent
+  loop:
+    - .emacs.d
+    - .emacs
+    - .doom.d
+    
+- name: Clone emacs configuration
+  git:
+   repo: "{{ item.repo }}"
+   dest: "{{ item.dest }}"
+   depth: "{{ item.depth }}"
+  loop:
+    - { repo: "https://github.com/hlissner/doom-emacs.git",
+        dest: "/home/{{ansible_env.SUDO_USER}}/Git/doom_emacs",
+        depth: 1,
+      }
+    - { repo: "https://gitlab.crans.org/bombar/doom.git",
+        dest: "/home/{{ansible_env.SUDO_USER}}/Git/doom_configuration",
+        depth: 0,
+      }
+  when: not ansible_check_mode
+
+# - name: Set permissions for doom emacs directory
+#   file:
+#     path: "/home/{{ ansible_env.SUDO_USER }}/Git/{{ item }}"
+#     state: directory
+#     owner: "{{ ansible_env.SUDO_USER }}"
+#     group: "{{ ansible_env.SUDO_GID }}"
+#     recurse: yes
+#   loop:
+#     - doom_emacs
+#     - doom_configuration
+
+- name: Deploy doom configuration
+  file:
+    src: "/home/{{ ansible_env.SUDO_USER }}/Git/{{ item.src }}"
+    dest: "/home/{{ ansible_env.SUDO_USER }}/{{ item.dest }}"
+    state: link
+  loop:
+    - { src: doom_emacs, dest: .emacs.d }
+    - { src: doom_configuration, dest: .doom.d }
+  when: not ansible_check_mode
+
+- name: Synchronize doom
+  command:
+    cmd: "/home/{{ ansible_env.SUDO_USER }}/.emacs.d/bin/doom sync"
