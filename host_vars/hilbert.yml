@@ -15,3 +15,32 @@ dns_zones:
       transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
       _acme: true,
     }
+
+cpasswords:
+  {
+    cmd_name: cpasswords,
+    readonly: False,
+    smtp: localhost,
+    mailfrom: cpasswords <root@maximebombar.fr,
+    mailto: bombar@crans.org,
+    gpg :
+      [
+        {
+        user: "pollion",
+        uid: "bombar@crans.org",
+        fingerprint: "C352C156DCCDFD64CFD6577B84EAFB7218C74ED1",
+        },
+      ],
+    roles:
+      [
+        {
+        name: "pollion",
+        members: ["pollion"],
+        },
+
+        {
+        name: "pollion-w",
+        members: ["pollion"],
+        },
+      ],
+  }

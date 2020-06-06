@@ -29,8 +29,8 @@
     state: "directory"
     recurse: yes
   loop:
-    - "/etc/{{cmd_name}}/"
-    - "/var/lib/{{cmd_name }}/db"
+    - "/etc/{{cpasswords.cmd_name}}/"
+    - "/var/lib/{{cpasswords.cmd_name }}/db"
 
 - name: Deploy cpasswords configuration
   template:

@@ -5,7 +5,7 @@ cpasswords Configuration Server
 """
 
 #: Pour override le nom si vous voulez renommer la commande
-cmd_name = '{{ cmd_name }}'
+cmd_name = '{{ cpasswords.cmd_name }}'
 
 #: Chemin vers la commande sendmail
 sendmail_cmd = '/usr/lib/sendmail'
@@ -14,23 +14,23 @@ sendmail_cmd = '/usr/lib/sendmail'
 STORE = '/var/lib/%s/db/' % (cmd_name,)
 
 #: Ce serveur est-il read-only (on ne peut pas y modifier les mots de passe)
-READONLY = {{ readonly }}
+READONLY = {{ cpasswords.readonly }}
 
 #: Paramètres mail
-SMTP_HOST = "{{ smtp }}"
-FROM_MAIL = "{{ mailfrom }}"
-TO_MAIL = "{{ mailto }}"
+SMTP_HOST = "{{ cpasswords.smtp }}"
+FROM_MAIL = "{{ cpasswords.mailfrom }}"
+TO_MAIL = "{{ cpasswords.mailto }}"
 
 #: Mapping des utilisateurs et de leurs (mail, fingerprint GPG)
 KEYS = {
-{% for key in keys %}
+{% for key in cpasswords.gpg %}
   "{{ key.user }}": ("{{ key.uid }}", "{{ key.fingerprint }}"),
 {% endfor %}
 }
 
 #: Les roles utilisés pour savoir qui a le droit le lire/écrire quoi
 ROLES = {
-{% for role in roles %}
-  "{{ role.name }}": "{{ role.members }}",
+{% for role in cpasswords.roles %}
+  "{{ role.name }}": {{ role.members }},
 {% endfor %}
 }
