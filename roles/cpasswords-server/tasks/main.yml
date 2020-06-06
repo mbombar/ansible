@@ -1,0 +1,62 @@
+---
+- name: Install dependencies
+  apt:
+    update_cache: true
+    name:
+      - python3
+      - gettext
+      - python3-venv
+      - python3-paramiko
+      - python3-pyperclip
+      - python3-gpg
+      - python3-pip
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Clone Config_Files
+  git:
+    repo: https://gitlab.crans.org/nounous/cranspasswords.git
+    dest: ~/Git/cpasswords
+    track_submodules: yes
+    version: dev
+    umask: "022"
+  become: no
+    
+- name: Create cpasswords directories
+  file:
+    path: "{{ item }}"
+    state: "directory"
+    recurse: yes
+  loop:
+    - "/etc/{{cmd_name}}/"
+    - "/var/lib/{{cmd_name }}/db"
+
+- name: Deploy cpasswords configuration
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {
+    src: "cpasswords/serverconfig.py.j2",
+    dest: "/etc/cpasswords/serverconfig.py",
+    }
+    - {
+    src: "sudoers.d/cpasswords.j2",
+    dest: "/etc/sudoers.d/cpasswords",
+    }
+
+- name: Install cpasswords
+  pip:
+    name: ~/Git/cpasswords
+    virtualenv: ~/Git/cpasswords/venv
+    virtualenv_command: python3 -m venv
+    virtualenv_site_packages: yes
+  become: no
+
+- name: Enable cpasswords-server binary
+  file:
+    src: /home/{{ ansible_user }}/Git/cpasswords/venv/bin/cranspasswords-server
+    dest: /bin/cpasswords-server
+    state: link
+    force: yes
