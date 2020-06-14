@@ -31,9 +31,15 @@
 - name: Install bat
   apt:
     deb: https://github.com/sharkdp/bat/releases/download/v0.15.1/bat_0.15.1_amd64.deb
-  when: not ansible_check_mode
+  when: not ansible_check_mode and arch=="amd64"
+
+- name: Install bat raspi
+  apt:
+    deb: https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_arm64.deb
+  when: not ansible_check_mode and arch=="arm64"
+
 
 - name: python3 is better. Eat it.
   command:
-    cmd: update-alternatives /usr/bin/python python /usr/bin/python3 40
+    cmd: update-alternatives --install /usr/bin/python python /usr/bin/python3 40
   when: not ansible_check_mode

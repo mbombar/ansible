@@ -11,6 +11,9 @@ zamok
 [scaleway]
 hilbert
 
+[kolok]
+katrina
+
 [bde]
 note
 note-test
@@ -20,6 +23,7 @@ bde3
 servens
 bde
 crans
+kolok
 
 [bombar:children]
 servens
@@ -28,6 +32,7 @@ crans
 [pollion:children]
 bde
 scaleway
+kolok
 
 [bombar:vars]
 ansible_user=bombar

@@ -2,5 +2,7 @@
 shell: "zsh"
 can_sudo: no  # Avoid abusing of my rights ...
 
+arch: "amd64"
+
 certbot_challenge_maximebombar: "{{ vault_certbot_challenge_maximebombar }}"
 certbot_challenge_satellist: "{{ vault_certbot_challenge_satellist }}"
