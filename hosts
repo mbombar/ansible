@@ -8,9 +8,15 @@ localhost ansible_connection=local
 [servens]
 thunes
 thunes-dev
+sage
 
 [crans]
 zamok
+
+[crans_newinfra]
+tealc
+daniel
+belenios
 
 [scaleway]
 hilbert
@@ -37,6 +43,7 @@ crans
 bde
 scaleway
 kolok
+crans_newinfra
 
 [bombar:vars]
 ansible_user=bombar
