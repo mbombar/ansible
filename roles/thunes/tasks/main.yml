@@ -8,6 +8,7 @@
       - nginx
       - uwsgi
       - uwsgi-plugin-python3
+      - memcached
   register: apt_result
   retries: 3
   until: apt_result is succeeded
