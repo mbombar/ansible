@@ -1,0 +1,88 @@
+{{ ansible_header | comment }}
+
+location:
+    source_directories:
+{% for dir in borg.to_backup %}
+        - {{ dir }}
+{% endfor %}
+
+    repositories:
+{% for remote in borg.remote %}
+        - {{ remote }}
+{% endfor %}
+
+    exclude_patterns:
+        - '*.pyc'
+        - '\#*\#'
+        - '*~'
+{% for pattern in borg.to_exclude | default([]) %}
+        - {{ pattern }}
+{% endfor %}
+
+    exclude_caches: true
+
+    exclude_if_present:
+        - .nobackup
+
+    borgmatic_source_directory: /tmp/borgmatic
+
+storage:
+    encryption_passphrase: {{ vault_borgbackup_passwd }}
+    ssh_command: ssh -i /etc/borgmatic/id_ed25519_borg
+    borg_base_directory: /etc/borgmatic
+    borg_config_directory: /etc/borgmatic/config/
+    borg_cache_directory: /etc/borgmatic/cache
+    borg_security_directory: /etc/borgmatic/config/security
+    borg_keys_directory: /etc/borgmatic/config/keys
+    compression: 'lz4'
+    umask: 0077
+    lock_wait: 5
+    archive_name_format: '{hostname}-{now}'
+{% set extra_init = borg.extra_init | default([]) %}
+{% set extra_prune = borg.extra_prune | default([]) %}
+{% set extra_create = borg.extra_create | default([]) %}
+{% set extra_check = borg.extra_check | default([]) %}
+{% if extra_init or extra_prune or extra_create or extra_check %}
+    extra_borg_options:
+{% endif %}
+{% if extra_init %}
+        # Extra command-line options to pass to "borg init".
+        init: {% for cmd in extra_init %}--{{ cmd }} {% endfor %}
+{% endif %}
+{% if extra_prune  %}
+        # Extra command-line options to pass to "borg prune".
+        prune: {% for cmd in extra_prune  %}--{{ cmd }} {% endfor %}
+{% endif %}
+
+{% if extra_create %}
+        # Extra command-line options to pass to "borg create".
+        create: {% for cmd in extra_create %}--{{ cmd }} {% endfor %}
+{% endif %}
+
+{% if extra_check %}
+        # Extra command-line options to pass to "borg check".
+        check: {% for cmd in extra_check %}--{{ cmd }} {% endfor %}
+{% endif %}
+
+retention:
+{% for retention in borg.retention %}
+    keep_{{ retention[0] }}: {{ retention[1] }}
+{% endfor %}
+    prefix: '{hostname}-'
+
+consistency:
+    checks:
+{% for check in borg.consistency_check %}
+        - {{ check }}
+{% endfor %}
+
+{% if borg.hooks | default([]) %}
+  hooks:
+  {% for hook in borg.hooks %}
+    {{ hook.type }}:
+    {% for value in hook.values %}
+      - {{ value }}
+    {% endfor %}
+  {% endfor %}
+  umask: 0077
+{% endif %}

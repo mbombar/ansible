@@ -1,0 +1,38 @@
+---
+- name: Install borgbackup
+  apt:
+    update_cache: true
+    name:
+      - borgbackup
+    state: present
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Create borgbackup user
+  user:
+    create_home: yes
+    home: '/var/lib/borg/'
+    system: yes
+    state: present
+    update_password: always
+    name: borg
+
+- name: Ensures .ssh dir exists
+  file:
+    path: /var/lib/borg/.ssh
+    state: directory
+    mode: 0700
+    owner: borg
+
+- name: Deploy authorized_keys
+  template:
+    src: "authorized_keys.j2"
+    dest: "/var/lib/borg/.ssh/authorized_keys"
+    mode: 0600
+
+- name: Indicate role in motd
+  template:
+    src: update-motd.d/05-service.j2
+    dest: /etc/update-motd.d/05-borg
+    mode: 0755

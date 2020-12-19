@@ -1,0 +1,51 @@
+---
+- name: Install borgbackup
+  apt:
+    update_cache: true
+    name:
+      - borgbackup
+      - borgmatic
+    state: present
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Ensures /etc/borgmatic exists
+  file:
+    path: /etc/borgmatic
+    state: directory
+    mode: 0700
+    owner: root
+  
+- name: Deploy ssh private key
+  template:
+    src: "borgmatic/id_ed25519_borg.j2"
+    dest: "/etc/borgmatic/id_ed25519_borg"
+    mode: 0600
+    owner: root
+
+- name: Deploy borgmatic config
+  template:
+    src: "borgmatic/config.yaml.j2"
+    dest: "/etc/borgmatic/config.yaml"
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Init borg repository
+  command:
+    cmd: /usr/bin/borgmatic init -e repokey
+  register: borg_init
+  changed_when: '"does not exist" in borg_init.stderr'
+
+- name: Deploy borg cron
+  template:
+    src: "cron.d/borg.j2"
+    dest: "/etc/cron.d/borg"
+  notify: restart cron
+
+- name: Indicate role in motd
+  template:
+    src: update-motd.d/04-service.j2
+    dest: /etc/update-motd.d/04-borgbackup
+    mode: 0755

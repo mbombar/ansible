@@ -1,0 +1,3 @@
+{{ ansible_header | comment }}
+
+command="borg serve --restrict-to-path {{ borg.path }}",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding {{ vault_borgbackup_ssh_pubkey }}
