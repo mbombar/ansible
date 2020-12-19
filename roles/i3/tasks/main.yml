@@ -5,6 +5,8 @@
     install_recommends: false
     name:
       - i3
+      - i3status
+      - xinit
       - xfce4-terminal
       - scrot
       - xss-lock
