@@ -17,6 +17,11 @@
       - pulseaudio
       - pulseaudio-utils
       - pavucontrol
+      - firefox
+      - chromium
+      - chromium-sandbox
+      - network-manager-gnome
+      - python3-virtualenv
   register: apt_result
   retries: 3
   until: apt_result is succeeded
