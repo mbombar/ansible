@@ -66,3 +66,9 @@
     - .bashrc
     - .bash_aliases
   when: shell == "bash" and not ansible_check_mode
+
+- name: No install recommands apt
+  template:
+    src: apt/apt.conf.d/99no-install-recommends
+    dest: /etc/apt/apt.conf.d/99no-install-recommends
+  become: yes
