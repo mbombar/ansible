@@ -6,6 +6,7 @@
     name:
       - i3
       - i3status
+      - i3lock
       - xinit
       - xfce4-terminal
       - scrot
