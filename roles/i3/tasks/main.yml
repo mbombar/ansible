@@ -15,6 +15,7 @@
       - autorandr
       - imagemagick
       - brightnessctl
+      - brightness-udev
       - pulseaudio
       - pulseaudio-utils
       - pavucontrol
