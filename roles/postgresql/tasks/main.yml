@@ -1,0 +1,43 @@
+---
+- name: Install postgresql
+  apt:
+    update_cache: true
+    name: postgresql
+    state: present
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Ensure main postgresql directory exists
+  file:
+    path: /etc/postgresql/{{ postgresql.version }}/main/
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: 0755
+    recurse: yes
+
+- name: Ensure configuration directory exists
+  file:
+    path: /etc/postgresql/{{ postgresql.version }}/main/conf.d
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: 0755
+        
+- name: Configuration of postgresql {{ postgresql.version }}
+  template:
+    src: postgresql/{{ item }}.j2
+    dest: /etc/postgresql/{{ postgresql.version }}/main/{{ item }}
+    mode: 0640
+    owner: postgres
+    group: postgres
+  loop:
+   - pg_hba.conf
+   - pg_ident.conf
+   - postgresql.conf
+  notify:
+    - restart postgresql
+    
+
+
