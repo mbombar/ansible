@@ -6,3 +6,5 @@ arch: "amd64"
 
 certbot_challenge_maximebombar: "{{ vault_certbot_challenge_maximebombar }}"
 certbot_challenge_satellist: "{{ vault_certbot_challenge_satellist }}"
+
+ansible_header: "{{ ansible_managed }}"
