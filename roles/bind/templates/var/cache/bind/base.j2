@@ -1,21 +1,26 @@
 ; {{ ansible_managed }}
 
-$ORIGIN {{item.name }}.
+{% set zone_name = item[0] %}
+
+{% block SOA %}
+$ORIGIN {{ zone_name }}.
 $TTL 10
 
-@				IN  SOA	    ns bombar.crans.org.   (
-					       {{ timestamp.stdout }}  ; serial
-					       86402	   ; refresh
+@				IN  SOA	 ns0.{{ zone_name }}. bombar.crans.org.   (
+					       {{ serial }}  ; serial
+					       86400	   ; refresh
 					       3600	   ; retry
 					       3600000	   ; expire
 					       300	   ; TTL
 					       )
+{% endblock %}
 
 {% block NS %}
-@				IN  NS	    ns
-@				IN  NS	    ns0.paulon.org.
-ns				IN  A	    51.15.204.106
-ns				IN  AAAA    2001:bc8:4400:2c00::3:923
+@				IN  NS	   ns0.{{ zone_name }}.
+@				IN  NS	   ns0.paulon.org.
+
+ns0			IN  A	    	51.15.204.106
+ns0			IN  AAAA    2001:bc8:4400:2c00::3:923
 {% endblock %}
 
 {% block MX %}
@@ -23,9 +28,6 @@ ns				IN  AAAA    2001:bc8:4400:2c00::3:923
 
 @				IN A		51.15.204.106
 @				IN AAAA		2001:bc8:4400:2c00::3:923
-
-hilbert				IN A		51.15.204.106
-hilbert				IN AAAA		2001:bc8:4400:2c00::3:923
 
 {% block TXT %}
 {% endblock %}

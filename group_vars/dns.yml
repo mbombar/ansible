@@ -1,0 +1,22 @@
+glob_dns_zones:
+  - maximebombar.fr:
+      masters:
+        - 51.15.204.106
+        - "2001:bc8:47ac:2017::1"
+      slaves:
+        - 163.172.172.173
+        - "2001:bc8:47a8:559::1"
+      acme: "{{ vault_certbot_challenge_maximebombar }}"
+      master: false
+      active: true
+
+  - satellist.fr:
+      masters:
+        - 51.15.204.106
+        - "2001:bc8:47ac:2017::1"
+      slaves:
+        - 163.172.172.173
+        - "2001:bc8:47a8:559::1"
+      acme: "{{ vault_certbot_challenge_satellist }}"
+      master: false
+      active: true

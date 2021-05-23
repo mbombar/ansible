@@ -5,6 +5,9 @@ localhost
 [local]
 localhost ansible_connection=local
 
+[dns]
+hilbert
+
 [servens]
 thunes
 thunes-dev

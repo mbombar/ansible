@@ -1,5 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
 - hosts: hilbert
+  vars:
+    dns_zones: '{{ glob_dns_zones | default({}) | combine(loc_dns_zones | default({}), recursive=True) }}'
   roles:
     - bind

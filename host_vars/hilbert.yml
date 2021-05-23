@@ -1,20 +1,11 @@
 shell: "bash"
 can_sudo: yes
 
-dns_zones:
-  - { name: "maximebombar.fr",
-      type: "master",
-      forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
-      transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
-      _acme: true,
-    }
-
-  - { name: "satellist.fr",
-      type: "master",
-      forwarders: ["51.158.74.193", "2001:bc8:47c0:620::1"],
-      transfer:   ["51.158.74.193", "2001:bc8:47c0:620::1"],
-      _acme: true,
-    }
+loc_dns_zones:
+  - maximebombar.fr:
+      master: yes
+  - satellist.fr:
+      master: yes
 
 cpasswords:
   {

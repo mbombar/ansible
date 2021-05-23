@@ -4,35 +4,31 @@
     update_cache: true
     name:
       - bind9
+    state: present
   register: apt_result
   retries: 3
   until: apt_result is succeeded
 
-- name: Create serial
-  command: date -u +%Y%m%d%H
-  register: timestamp
-  changed_when: false
-  run_once: true
-  check_mode: false
-
 - name: Deploy config
   template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
+    src: 'etc/bind/{{ item.src }}'
+    dest: '/etc/bind/{{ item.dest }}'
     owner: root
     group: bind
   with_items:
-    - { src: 'named.conf.local.j2', dest: '/etc/bind/named.conf.local' }
+    - { src: 'named.conf.local.j2', dest: 'named.conf.local' }
+  notify: Restart bind
 
-- name: deploy zones
+- name: Deploy zones
   template:
-    src: "db.{{ item.name }}.j2"
-    dest: "/var/cache/bind/db.{{ item.name }}"
+    src: "var/cache/bind/db.{{ item[0] }}.j2"
+    dest: "/var/cache/bind/db.{{ item[0] }}"
     owner: root
     group: bind
   when:
-    - (item.type == "master")
-  loop: "{{ dns_zones }}"
+    -  item[1].master
+  loop: "{{ dns_zones.items() }}"
+  notify: Restart bind
 
 - name: Ensures Zone directory exists
   file:
@@ -42,15 +38,29 @@
 
 - name: Symlink zone files
   file:
-    src: /var/cache/bind/db.{{ item.name }}
-    dest: /etc/bind/zones/db.{{ item.name }}
+    src: /var/cache/bind/db.{{ item[0] }}
+    dest: /etc/bind/zones/db.{{ item[0] }}
     state: link
   when:
-    - (item.type == "master")
-  loop: "{{ dns_zones }}"
+    - item[1].master
+  loop: "{{ dns_zones.items() }}"
 
-- name: Restart bind
-  systemd:
-    enabled: yes
-    state: restarted
-    name: bind9
+- name: Deploy ACME zones
+  template:
+    src: "var/cache/bind/db.acme.j2"
+    dest: "/var/cache/bind/db._acme-challenge.{{ item[0] }}"
+    owner: root
+    group: bind
+  when:
+    - item[1].master and item[1].acme
+  loop: "{{ dns_zones.items() }}"
+  notify: Restart bind
+
+- name: Symlink ACME zone files
+  file:
+    src: /var/cache/bind/db._acme-challenge.{{ item[0] }}
+    dest: /etc/bind/zones/db._acme-challenge.{{ item[0] }}
+    state: link
+  when:
+    - item[1].master
+  loop: "{{ dns_zones.items() }}"

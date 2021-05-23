@@ -1,0 +1,73 @@
+{{ ansible_header | comment(decoration="// ") }}
+
+include "/etc/bind/zones.rfc1918";
+
+
+{% for zone_name, zone in dns_zones.items() %}
+
+{% set zname = zone_name.split('.')[0] %}
+
+{% if zone.master and zone.acme %}
+
+// Let's Encrypt Challenge DNS-01 keys (TSIG)
+key "certbot_challenge_{{ zname }}" {
+    algorithm hmac-sha512;
+    secret "{{ lookup('vars', 'certbot_challenge_' + zname) }}";
+};
+
+zone "_acme-challenge.{{ zone_name }}" {
+
+  type master;
+  notify yes;
+
+  allow-transfer {
+  {% for slave in zone.slaves %}
+    {{ slave }};
+  {% endfor %}
+  };
+
+  update-policy {
+    grant certbot_challenge_{{ zname }}. name _acme-challenge.{{ zone_name }} TXT;
+  };
+
+  file "db._acme-challenge.{{ zone_name }}";
+
+  };
+
+{% endif %}
+
+zone "{{ zone_name }}" IN {
+
+  {% if zone.master -%}
+
+  type master;
+  // Zone Files are in /var/cache/bind/
+  file "db.{{ zone_name }}";
+
+  allow-transfer {
+    {% for slave in zone.slaves -%}
+    {{ slave }};
+    {% endfor -%}
+  };
+
+  notify yes;
+
+ {% else %}
+
+   type slave;
+   file "bak.{{ zone_name }}";
+
+   masters {
+    {% for master in zone.masters %}
+      {{ master }};
+    {% endfor %}
+    };
+
+    allow-transfer { "none"; };
+    notify no;
+
+{% endif -%}
+
+};
+
+{% endfor %}
