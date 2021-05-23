@@ -1,8 +1,8 @@
 {{ ansible_managed | comment }}
 
-SECRET_KEY = "{{ django_secret_key.stdout_lines | first }}"
+SECRET_KEY = "{{ thunes.secret_key }}"
 
-DEBUG = {{ thunes_debug }}
+DEBUG = {{ thunes.debug }}
 
 INTERNAL_IPS = []
 
@@ -16,10 +16,18 @@ OPTIONAL_APPS = []
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '{{ thunes_db_name }}',
-        'USER': '{{ thunes_db_user }}',
-	'PASSWORD': '{{ thunes_db_password }}',
-        'HOST': '{{ thunes_db_ip }}',
+        'NAME': '{{ thunes.db_name }}',
+        'USER': '{{ thunes.db_user }}',
+	'PASSWORD': '{{ thunes.db_password }}',
+        'HOST': '{{ thunes.db_ip }}',
         'PORT': '5432',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND':
+        'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
     }
 }

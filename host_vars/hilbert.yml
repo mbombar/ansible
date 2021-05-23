@@ -44,3 +44,18 @@ cpasswords:
         },
       ],
   }
+
+
+thunes:
+  debug: True
+  db_name: "thunes_dev"
+  db_user: "thunes_dev"
+  db_ip: "localhost"
+  db_password: "{{ vault_thunes_dev_db_password }}"
+  secret_key: "{{ vault_thunes_dev_django_secret_key }}"
+
+postgresql:
+  version: 11
+  hosts:
+    - [ "thunes_dev", "thunes_dev", "127.0.0.1/32", null ]
+    - [ "thunes_dev", "thunes_dev", "::1/128", null ]

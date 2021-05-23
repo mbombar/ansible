@@ -15,49 +15,43 @@
 
 - name: Create thunes directory
   file:
-    path: /var/www/MathoosHouse
+    path: /var/www/Thunes
     state: directory
     mode: "2775"
     owner: www-data
 
 - name: Clone Thunes repository
   git:
-    repo: https://gitea.servens.org/bombar/MathoosHouse.git
-    dest: /var/www/MathoosHouse
+    repo: https://gitlab.crans.org/bombar/thunes.git
+    dest: /var/www/Thunes
     track_submodules: yes
     version: master
     umask: "002"
   when: not ansible_check_mode
 
-- name: Generate django SECRET_KEY
-  shell: python3 -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%&*(-_=+)") for i in range(50)]))'
-  register: django_secret_key
-  check_mode: false
-  changed_when: true
-
 - name: Deploy settings_local
   template:
     src: settings_local.j2
-    dest: /var/www/MathoosHouse/MathoosHouse/settings_local.py
+    dest: /var/www/Thunes/Thunes/settings_local.py
   notify: Reload uwsgi
 
 - name: Install pip requirements
   pip:
-    requirements: /var/www/MathoosHouse/requirements.txt
-    virtualenv: /var/www/MathoosHouse/.env
+    requirements: /var/www/Thunes/requirements.txt
+    virtualenv: /var/www/Thunes/.env
     virtualenv_command: pyvenv
     umask: "0002"
 
 - name: Install migrations
   django_manage:
-    app_path: /var/www/MathoosHouse
+    app_path: /var/www/Thunes
     command: migrate
-    virtualenv: /var/www/MathoosHouse/.env
+    virtualenv: /var/www/Thunes/.env
 
 - name: Configure nginx
   file:
-    src: /var/www/MathoosHouse/WebUtils/MathoosHouse.nginx
-    dest: /etc/nginx/sites-enabled/MathoosHouse.nginx
+    src: /var/www/Thunes/WebUtils/Thunes.nginx
+    dest: /etc/nginx/sites-enabled/Thunes.nginx
     state: link
   when: not ansible_check_mode
   notify: Reload nginx
@@ -71,8 +65,8 @@
 
 - name: Configure uwsgi
   file:
-    src: /var/www/MathoosHouse/WebUtils/MathoosHouse.uwsgi
-    dest: /etc/uwsgi/apps-enabled/MathoosHouse.ini
+    src: /var/www/Thunes/WebUtils/Thunes.uwsgi
+    dest: /etc/uwsgi/apps-enabled/Thunes.ini
     state: link
   when: not ansible_check_mode
   notify: Reload uwsgi
