@@ -1,5 +1,0 @@
-thunes_debug: True
-thunes_db_name: "thunes_dev"
-thunes_db_user: "thunes_dev"
-thunes_db_ip: "172.16.0.2"
-thunes_db_password: "l0gHdg8AhZOtg"
