@@ -8,7 +8,6 @@ glob_dns_zones:
         - "2001:bc8:47a8:559::1"
       acme: "{{ vault_certbot_challenge_maximebombar }}"
       master: false
-      active: true
 
   - satellist.fr:
       masters:
@@ -19,4 +18,4 @@ glob_dns_zones:
         - "2001:bc8:47a8:559::1"
       acme: "{{ vault_certbot_challenge_satellist }}"
       master: false
-      active: true
+
