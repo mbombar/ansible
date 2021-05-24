@@ -19,3 +19,23 @@ glob_dns_zones:
       acme: "{{ vault_certbot_challenge_satellist }}"
       master: false
 
+  - paulon.org:
+      masters:
+        - 163.172.172.173
+        - "2001:bc8:47a8:559::1"
+      slaves: []
+      master: false
+
+  - iiv.re:
+      masters:
+        - 163.172.172.173
+        - "2001:bc8:47a8:559::1"
+      slaves: []
+      master: false
+
+  - kelvinator.fr:
+      masters:
+        - 163.172.172.173
+        - "2001:bc8:47a8:559::1"
+      slaves: []
+      master: false
