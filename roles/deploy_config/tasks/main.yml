@@ -1,10 +1,21 @@
 ---
-- name: Deploy ssh key
+- name: Deploy ssh keys
   authorized_key:
     user: "{{ ansible_user }}"
-    comment: Maxime Bombar (bombar@crans.org) - Poincare
-    exclusive: yes
-    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvuevXcRtS/qfxSZg6/EGiNEHeMA55G92itIkhMRMZ
+    comment: Maxime Bombar (bombar@crans.org) - {{ item.name }}
+    exclusive: no
+    key: "{{ item.algo }} {{ item.fingerprint }}"
+  loop:
+    - {
+    name: poincare,
+    algo: ssh-ed25519,
+    fingerprint: AAAAC3NzaC1lZDI1NTE5AAAAILlvuevXcRtS/qfxSZg6/EGiNEHeMA55G92itIkhMRMZ,
+    }
+    - {
+    name: weil,
+    algo: ssh-ed25519,
+    fingerprint: AAAAC3NzaC1lZDI1NTE5AAAAIP65sTcCZSKi0RYF348QqD/CbX6eOEtpMnozy9iRupSF,
+    }
 
 - name: Clone Config_Files
   git:
@@ -72,3 +83,4 @@
     src: apt/apt.conf.d/99no-install-recommends
     dest: /etc/apt/apt.conf.d/99no-install-recommends
   become: yes
+  when: can_sudo
